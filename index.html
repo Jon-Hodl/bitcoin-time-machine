@@ -347,15 +347,23 @@
 <body>
     <div class="container">
         <!-- Embed Code Section -->
-        <div class="embed-section">
+        <!-- Embed Section - Collapsed by default -->
+        <div class="embed-section" id="embed-section" style="display: none;">
             <h2>📋 Embed This On Your Website</h2>
             <p style="color: var(--text-secondary); margin-bottom: 16px; font-size: 14px;">
                 Copy the code below and paste it into any HTML page or WordPress custom HTML block.
             </p>
             <div class="embed-code" id="embed-code">
-&lt;iframe src="https://jonhodl.github.io/bitcoin-time-machine/embed/" width="100%" height="800" style="border:none; border-radius: 12px;"&gt;&lt;/iframe&gt;
+&lt;iframe src="https://jon-hodl.github.io/bitcoin-time-machine/" width="100%" height="800" style="border:none; border-radius: 12px;"&gt;&lt;/iframe&gt;
             </div>
             <button class="copy-btn" id="copy-btn">Copy Embed Code</button>
+        </div>
+        
+        <!-- Toggle Embed Section -->
+        <div style="text-align: center; margin-bottom: 30px;">
+            <button onclick="document.getElementById('embed-section').style.display = document.getElementById('embed-section').style.display === 'none' ? 'block' : 'none'" style="background: transparent; border: 1px solid var(--border-color); color: var(--text-muted); padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 13px;">
+                📋 Embed This Widget
+            </button>
         </div>
 
         <header>
@@ -449,7 +457,7 @@
             <p style="color: var(--text-muted); font-size: 13px; line-height: 1.8;">
                 Data via <a href="https://mempool.space" target="_blank" style="color: var(--bitcoin-orange); text-decoration: none;">mempool.space</a> •
                 <a href="https://jon-hodl.github.io/Bitcoin-Price/" target="_blank" style="color: var(--bitcoin-orange); text-decoration: none;">Bitcoin Price Database</a> •
-                Built to orange pill the world
+                Built to <a href="https://www.whatisbitcoin.com/learn/what-is-the-orange-pill" target="_blank" style="color: var(--bitcoin-orange); text-decoration: none;">orange pill</a> the world
             </p>
         </div>
 
