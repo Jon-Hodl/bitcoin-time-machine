@@ -209,18 +209,42 @@
         
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, var(--text-muted) 0%, #888 100%);
-            border-radius: 16px;
             transition: width 1s ease;
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            padding-right: 12px;
-            min-width: 40px;
+            position: relative;
         }
-        
-        body.vibrant .progress-fill {
+
+        .progress-fill-orange {
             background: linear-gradient(90deg, var(--bitcoin-orange) 0%, #ffd700 100%);
+            border-radius: 16px 0 0 16px;
+        }
+
+        .progress-fill-green {
+            background: linear-gradient(90deg, var(--success) 0%, #16a34a 100%);
+            border-radius: 0 16px 16px 0;
+        }
+
+        .progress-marker {
+            position: absolute;
+            top: -8px;
+            bottom: -8px;
+            width: 3px;
+            background: #fff;
+            box-shadow: 0 0 10px rgba(255,255,255,0.5);
+            transition: left 1s ease;
+            z-index: 10;
+        }
+
+        .marker-label {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 10px;
+            font-weight: 700;
+            color: #fff;
+            background: rgba(0,0,0,0.8);
+            padding: 2px 6px;
+            border-radius: 4px;
         }
         
         .progress-text {
@@ -373,9 +397,11 @@
                     <span>HODL Progress</span>
                     <span id="blocks-old">0 blocks</span>
                 </div>
-                <div class="progress-bar">
-                    <div id="progress-fill" class="progress-fill" style="width: 0%;">
-                        <span class="progress-text"></span>
+                <div class="progress-bar" id="progress-bar">
+                    <div id="progress-fill-orange" class="progress-fill progress-fill-orange" style="width: 0%;"></div>
+                    <div id="progress-fill-green" class="progress-fill progress-fill-green" style="width: 0%;"></div>
+                    <div id="progress-marker" class="progress-marker" style="left: 0%;">
+                        <span class="marker-label">4Y</span>
                     </div>
                 </div>
                 <div class="progress-labels">
@@ -597,9 +623,25 @@
                     changeEl.className = 'result-value ' + (change >= 0 ? 'positive' : 'negative');
                 }
                 
-                // Progress bar
-                const progress = Math.min((blocksOld / FOUR_YEARS_BLOCKS) * 100, 100);
-                document.getElementById('progress-fill').style.width = progress + '%';
+                // Progress bar with dynamic scaling
+                const orangeFill = document.getElementById('progress-fill-orange');
+                const greenFill = document.getElementById('progress-fill-green');
+                const marker = document.getElementById('progress-marker');
+
+                if (blocksOld <= FOUR_YEARS_BLOCKS) {
+                    // Under 4 years: orange fill grows, no green, marker at end
+                    const orangePct = (blocksOld / FOUR_YEARS_BLOCKS) * 100;
+                    orangeFill.style.width = orangePct + '%';
+                    greenFill.style.width = '0%';
+                    marker.style.left = '100%';
+                } else {
+                    // Over 4 years: scale to total blocks, orange=210k, green=remainder
+                    const orangePct = (FOUR_YEARS_BLOCKS / blocksOld) * 100;
+                    const greenPct = ((blocksOld - FOUR_YEARS_BLOCKS) / blocksOld) * 100;
+                    orangeFill.style.width = orangePct + '%';
+                    greenFill.style.width = greenPct + '%';
+                    marker.style.left = orangePct + '%';
+                }
                 
                 // Status
                 const statusEl = document.getElementById('status-message');
