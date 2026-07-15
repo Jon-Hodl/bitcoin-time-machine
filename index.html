@@ -98,7 +98,18 @@
             font-size: 48px;
             margin-bottom: 12px;
             color: #ffffff;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            background: linear-gradient(135deg, var(--bitcoin-orange) 0%, #ff9500 50%, var(--success) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+        }
+
+        body.vibrant h1 {
+            background: linear-gradient(135deg, var(--bitcoin-orange) 0%, #fff 50%, var(--success) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
         
         .subtitle {
