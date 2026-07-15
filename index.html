@@ -104,7 +104,7 @@
         }
         
         body.vibrant h1 {
-            background: linear-gradient(135deg, var(--bitcoin-orange) 0%, #fff 50%, var(--success) 100%);
+            background: linear-gradient(135deg, #fff 0%, #a0a0a0 100%);
         }
         
         .subtitle {
@@ -205,22 +205,24 @@
             overflow: hidden;
             position: relative;
             border: 1px solid var(--border-color);
+            display: flex;
         }
-        
+
         .progress-fill {
             height: 100%;
             transition: width 1s ease;
-            position: relative;
         }
 
         .progress-fill-orange {
             background: linear-gradient(90deg, var(--bitcoin-orange) 0%, #ffd700 100%);
             border-radius: 16px 0 0 16px;
+            flex-shrink: 0;
         }
 
         .progress-fill-green {
             background: linear-gradient(90deg, var(--success) 0%, #16a34a 100%);
             border-radius: 0 16px 16px 0;
+            flex-shrink: 0;
         }
 
         .progress-marker {
