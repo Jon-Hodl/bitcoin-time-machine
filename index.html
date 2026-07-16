@@ -898,12 +898,15 @@
             if (e.key === 'Enter') analyzeTransaction();
         });
         
-        // Sample TXID buttons
-        document.querySelectorAll('.sample-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                txInput.value = btn.dataset.txid;
+        // Sample TXID buttons - use event delegation for reliability
+        document.querySelector('.sample-txids').addEventListener('click', (e) => {
+            if (e.target.classList.contains('sample-btn')) {
+                e.preventDefault();
+                const txid = e.target.dataset.txid;
+                console.log('Sample button clicked:', txid);
+                txInput.value = txid;
                 analyzeTransaction();
-            });
+            }
         });
         
         txInput.focus();
