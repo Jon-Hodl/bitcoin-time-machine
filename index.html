@@ -177,6 +177,41 @@
             color: var(--text-muted);
         }
         
+        .sample-txids {
+            margin-top: 16px;
+            padding: 12px;
+            background: var(--bg-card);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .sample-txids span {
+            display: block;
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+        }
+        
+        .sample-btn {
+            display: inline-block;
+            padding: 8px 14px;
+            margin: 4px;
+            background: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--bitcoin-orange);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .sample-btn:hover {
+            background: var(--bitcoin-orange);
+            color: #000;
+            border-color: var(--bitcoin-orange);
+        }
+        
         .btn {
             width: 100%;
             padding: 16px;
@@ -401,6 +436,13 @@
             <label for="tx-input">Enter Bitcoin Transaction ID</label>
             <input type="text" id="tx-input" class="tx-input" placeholder="e.g., 4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b" maxlength="64">
             <p class="input-hint">Paste any confirmed Bitcoin transaction ID to analyze</p>
+            <div class="sample-txids">
+                <span>Try these milestone blocks:</span>
+                <button class="sample-btn" data-txid="76a30f7eefb41cd01733b23218faea8a1a1a2f6bbf1a2c11e4bc77f62c8e7ce9">210,000</button>
+                <button class="sample-btn" data-txid="5787c3d0740f13f280118404405f1c93fb7a63a953fa482b13e23c3b03a14bd4">420,000</button>
+                <button class="sample-btn" data-txid="cc2ca076fd04c2aeed6d02151c447ced3d09be6fb4d4ef36cb5ed4e7a3260566">630,000</button>
+                <button class="sample-btn" data-txid="a0db149ace545beabbd87a8d6b20ffd6aa3b5a50e58add49a3d435f898c272cf">840,000</button>
+            </div>
             <button id="analyze-btn" class="btn">Analyze Transaction</button>
             
             <div id="loading" class="loading">
@@ -849,6 +891,14 @@
         analyzeBtn.addEventListener('click', analyzeTransaction);
         txInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') analyzeTransaction();
+        });
+        
+        // Sample TXID buttons
+        document.querySelectorAll('.sample-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                txInput.value = btn.dataset.txid;
+                analyzeTransaction();
+            });
         });
         
         txInput.focus();
