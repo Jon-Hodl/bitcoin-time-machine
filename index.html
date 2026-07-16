@@ -898,16 +898,20 @@
             if (e.key === 'Enter') analyzeTransaction();
         });
         
-        // Sample TXID buttons - use event delegation for reliability
-        document.querySelector('.sample-txids').addEventListener('click', (e) => {
-            if (e.target.classList.contains('sample-btn')) {
-                e.preventDefault();
-                const txid = e.target.dataset.txid;
-                console.log('Sample button clicked:', txid);
-                txInput.value = txid;
-                analyzeTransaction();
-            }
-        });
+        // Sample TXID buttons
+        const sampleTxidsContainer = document.querySelector('.sample-txids');
+        if (sampleTxidsContainer) {
+            sampleTxidsContainer.addEventListener('click', (e) => {
+                const btn = e.target.closest('.sample-btn');
+                if (btn) {
+                    e.preventDefault();
+                    const txid = btn.dataset.txid;
+                    console.log('Sample button clicked:', txid);
+                    txInput.value = txid;
+                    analyzeTransaction();
+                }
+            });
+        }
         
         txInput.focus();
         init();
