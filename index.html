@@ -807,8 +807,8 @@
                     <span style="color: var(--text-muted);">${item.year}</span>
                     <span>${item.date} ${isTxYear ? '<span style="font-size: 10px; background: var(--bitcoin-orange); color: #000; padding: 2px 6px; border-radius: 3px; margin-left: 8px;">TX</span>' : ''}</span>
                     <span style="text-align: right; font-weight: 600;">$${item.price.toLocaleString()}</span>
-                    <span style="text-align: right; color: ${gain >= 0 ? 'var(--success)' : 'var(--error')}">${isTxYear ? '--' : (gain >= 0 ? '+$' : '-$') + Math.abs(gain).toLocaleString()}</span>
-                    <span style="text-align: right; color: ${gain >= 0 ? 'var(--success)' : 'var(--error')}; font-size: 12px;">${isTxYear ? '' : (gainPct >= 0 ? '+' : '') + gainPct.toFixed(0) + '%'}</span>
+                    <span style="text-align: right; color: ${gain >= 0 ? 'var(--success)' : 'var(--error)'}">${isTxYear ? '--' : (gain >= 0 ? '+$' : '-$') + Math.abs(gain).toLocaleString()}</span>
+                    <span style="text-align: right; color: ${gain >= 0 ? 'var(--success)' : 'var(--error)'}; font-size: 12px;">${isTxYear ? '' : (gainPct >= 0 ? '+' : '') + gainPct.toFixed(0) + '%'}</span>
                 `;
                 
                 anniversaryList.appendChild(div);
