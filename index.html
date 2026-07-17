@@ -112,14 +112,17 @@
             font-size: 48px;
             margin-bottom: 12px;
             color: #ffffff;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+        }
+
+        h1 .gradient-text {
             background: linear-gradient(135deg, var(--bitcoin-orange) 0%, #ff9500 50%, var(--success) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
         }
 
-        body.vibrant h1 {
+        body.vibrant h1 .gradient-text {
             background: linear-gradient(135deg, var(--bitcoin-orange) 0%, #fff 50%, var(--success) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -428,7 +431,7 @@
     <div class="container">
         <!-- Embed Code Section -->
         <header>
-            <h1 onclick="window.location.reload()" style="cursor: pointer;">⏳ Bitcoin Time Machine</h1>
+            <h1 onclick="window.location.reload()" style="cursor: pointer;">⏳ <span class="gradient-text">Bitcoin Time Machine</span></h1>
             <p class="subtitle">The 4-Year HODL: A Simple Bitcoin Profitability Explorer</p>
         </header>
         
