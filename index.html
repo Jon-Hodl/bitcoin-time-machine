@@ -179,7 +179,31 @@
             font-size: 12px;
             color: var(--text-muted);
         }
-        
+
+        .mode-btn {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            margin: 0 4px;
+        }
+
+        .mode-btn:hover {
+            border-color: var(--bitcoin-orange);
+            color: var(--text-primary);
+        }
+
+        .mode-btn.active {
+            background: var(--bitcoin-orange);
+            border-color: var(--bitcoin-orange);
+            color: #000;
+            font-weight: 600;
+        }
+
         .sample-txids {
             margin-top: 16px;
             padding: 12px;
@@ -435,24 +459,44 @@
             <p class="subtitle">The 4-Year HODL: A Simple Bitcoin Profitability Explorer</p>
         </header>
         
+        <!-- Mode Toggle -->
+        <div style="text-align: center; margin-bottom: 20px;">
+            <button id="mode-tx" class="mode-btn active" onclick="switchMode('tx')">🔍 Transaction ID</button>
+            <button id="mode-date" class="mode-btn" onclick="switchMode('date')">📅 Date & Sats</button>
+        </div>
+
         <div class="input-section">
-            <label for="tx-input">Enter Bitcoin Transaction ID</label>
-            <input type="text" id="tx-input" class="tx-input" placeholder="e.g., 4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b" maxlength="64">
-            <p class="input-hint">Paste any confirmed Bitcoin transaction ID to analyze</p>
-            <div class="sample-txids">
-                <span>Try with one of these milestone transactions:</span>
-                <button class="sample-btn" data-txid="76a30f7eefb41cd01733b23218faea8a1a1a2f6bbf1a2c11e4bc77f62c8e7ce9">210,000</button>
-                <button class="sample-btn" data-txid="5787c3d0740f13f280118404405f1c93fb7a63a953fa482b13e23c3b03a14bd4">420,000</button>
-                <button class="sample-btn" data-txid="cc2ca076fd04c2aeed6d02151c447ced3d09be6fb4d4ef36cb5ed4e7a3260566">630,000</button>
-                <button class="sample-btn" data-txid="a0db149ace545beabbd87a8d6b20ffd6aa3b5a50e58add49a3d435f898c272cf">840,000</button>
+            <!-- Transaction ID Mode -->
+            <div id="tx-mode">
+                <label for="tx-input">Enter Bitcoin Transaction ID</label>
+                <input type="text" id="tx-input" class="tx-input" placeholder="e.g., 4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b" maxlength="64">
+                <p class="input-hint">Paste any confirmed Bitcoin transaction ID to analyze</p>
+                <div class="sample-txids">
+                    <span>Try with one of these milestone transactions:</span>
+                    <button class="sample-btn" data-txid="76a30f7eefb41cd01733b23218faea8a1a1a2f6bbf1a2c11e4bc77f62c8e7ce9">210,000</button>
+                    <button class="sample-btn" data-txid="5787c3d0740f13f280118404405f1c93fb7a63a953fa482b13e23c3b03a14bd4">420,000</button>
+                    <button class="sample-btn" data-txid="cc2ca076fd04c2aeed6d02151c447ced3d09be6fb4d4ef36cb5ed4e7a3260566">630,000</button>
+                    <button class="sample-btn" data-txid="a0db149ace545beabbd87a8d6b20ffd6aa3b5a50e58add49a3d435f898c272cf">840,000</button>
+                </div>
+                <button id="analyze-btn" class="btn">Analyze Transaction</button>
             </div>
-            <button id="analyze-btn" class="btn">Analyze Transaction</button>
-            
+
+            <!-- Date & Sats Mode -->
+            <div id="date-mode" style="display: none;">
+                <label>Enter Date & Amount</label>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+                    <input type="date" id="lookup-date" class="tx-input" style="margin: 0;">
+                    <input type="number" id="lookup-sats" class="tx-input" placeholder="Sats (e.g., 100000)" style="margin: 0;">
+                </div>
+                <p class="input-hint">Enter a date and sats amount to see fiat value then & now</p>
+                <button id="lookup-btn" class="btn">Calculate Value</button>
+            </div>
+
             <div id="loading" class="loading">
                 <div class="loading-spinner"></div>
                 <p>Searching the timechain...</p>
             </div>
-            
+
             <div id="error" class="error"></div>
         </div>
         
@@ -918,6 +962,168 @@
             });
         }
         
+        // Mode switching
+        function switchMode(mode) {
+            const txMode = document.getElementById('tx-mode');
+            const dateMode = document.getElementById('date-mode');
+            const txBtn = document.getElementById('mode-tx');
+            const dateBtn = document.getElementById('mode-date');
+
+            if (mode === 'tx') {
+                txMode.style.display = 'block';
+                dateMode.style.display = 'none';
+                txBtn.classList.add('active');
+                dateBtn.classList.remove('active');
+            } else {
+                txMode.style.display = 'none';
+                dateMode.style.display = 'block';
+                txBtn.classList.remove('active');
+                dateBtn.classList.add('active');
+            }
+        }
+
+        // Date & Sats Lookup
+        async function lookupDateSats() {
+            const dateInput = document.getElementById('lookup-date').value;
+            const satsInput = document.getElementById('lookup-sats').value;
+
+            if (!dateInput || !satsInput) {
+                errorDiv.textContent = 'Please enter both a date and sats amount';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            errorDiv.style.display = 'none';
+            loadingDiv.style.display = 'block';
+
+            try {
+                // Format date as YYYY-MM-DD
+                const dateStr = dateInput;
+                const sats = parseInt(satsInput);
+                const btc = sats / 100000000;
+
+                // Look up price for that date
+                let price = priceData[dateStr]?.h;
+
+                // Try nearby dates if exact not found
+                if (!price) {
+                    const baseDate = new Date(dateInput);
+                    for (let i = 1; i <= 3; i++) {
+                        const before = new Date(baseDate);
+                        before.setDate(before.getDate() - i);
+                        const beforeStr = before.toISOString().split('T')[0];
+                        if (priceData[beforeStr]?.h) {
+                            price = priceData[beforeStr].h;
+                            break;
+                        }
+                        const after = new Date(baseDate);
+                        after.setDate(after.getDate() + i);
+                        const afterStr = after.toISOString().split('T')[0];
+                        if (priceData[afterStr]?.h) {
+                            price = priceData[afterStr].h;
+                            break;
+                        }
+                    }
+                }
+
+                if (!price) {
+                    throw new Error('No price data available for this date');
+                }
+
+                const valueThen = btc * price;
+                const valueNow = btc * currentBtcPrice;
+                const changeDollars = valueNow - valueThen;
+                const changePct = (changeDollars / valueThen) * 100;
+
+                // Calculate blocks (approximate from date)
+                const txDate = new Date(dateInput);
+                const now = new Date();
+                const daysDiff = Math.floor((now - txDate) / (1000 * 60 * 60 * 24));
+                const blocksOld = Math.floor(daysDiff * BLOCKS_PER_DAY);
+
+                // Update results
+                document.getElementById('tx-date').textContent = txDate.toLocaleDateString('en-US', {
+                    year: 'numeric', month: 'long', day: 'numeric'
+                });
+                document.getElementById('block-height').textContent = '~' + (currentBlockHeight - blocksOld).toLocaleString();
+                document.getElementById('blocks-age').textContent = blocksOld.toLocaleString();
+                document.getElementById('blocks-old').textContent = blocksOld.toLocaleString() + ' blocks';
+
+                const years = Math.floor(blocksOld / 52500);
+                const months = Math.floor((blocksOld % 52500) / 4375);
+                document.getElementById('time-age').textContent = years > 0 ? `${years}y ${months}m` : `${months}m`;
+
+                document.getElementById('price-then').textContent = '$' + price.toLocaleString();
+                document.getElementById('price-now').textContent = '$' + currentBtcPrice.toLocaleString();
+
+                const changeEl = document.getElementById('price-change');
+                const dollarsFormatted = changeDollars >= 0
+                    ? '+$' + changeDollars.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})
+                    : '-$' + Math.abs(changeDollars).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                changeEl.innerHTML = dollarsFormatted + '<div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">' + (changePct >= 0 ? '+' : '') + changePct.toFixed(1) + '%</div>';
+                changeEl.className = 'result-value ' + (changeDollars >= 0 ? 'positive' : 'negative');
+
+                // Progress bar
+                const orangeFill = document.getElementById('progress-fill-orange');
+                const greenFill = document.getElementById('progress-fill-green');
+                const marker = document.getElementById('progress-marker');
+
+                if (blocksOld <= FOUR_YEARS_BLOCKS) {
+                    const orangePct = (blocksOld / FOUR_YEARS_BLOCKS) * 100;
+                    orangeFill.style.width = orangePct + '%';
+                    greenFill.style.width = '0%';
+                    marker.style.left = '100%';
+                } else {
+                    const orangePct = (FOUR_YEARS_BLOCKS / blocksOld) * 100;
+                    const greenPct = ((blocksOld - FOUR_YEARS_BLOCKS) / blocksOld) * 100;
+                    orangeFill.style.width = orangePct + '%';
+                    greenFill.style.width = greenPct + '%';
+                    marker.style.left = orangePct + '%';
+                }
+
+                // Status
+                const statusEl = document.getElementById('status-message');
+                document.body.classList.remove('dull', 'vibrant');
+
+                if (blocksOld >= FOUR_YEARS_BLOCKS) {
+                    document.body.classList.add('vibrant');
+                    statusEl.className = 'status victory';
+                    statusEl.innerHTML = `
+                        <div style="font-size: 24px; margin-bottom: 8px;">🎉 The Thesis Holds True!</div>
+                        <div style="font-size: 14px; opacity: 0.8;">4+ years · Bitcoin has never produced a loss</div>
+                    `;
+                } else {
+                    document.body.classList.add('dull');
+                    const remaining = FOUR_YEARS_BLOCKS - blocksOld;
+                    const daysLeft = Math.ceil(remaining / BLOCKS_PER_DAY);
+                    statusEl.className = 'status hodl';
+                    statusEl.innerHTML = `
+                        <div style="font-size: 24px; margin-bottom: 8px;">Keep HODLing</div>
+                        <div style="font-size: 14px; opacity: 0.8;">${remaining.toLocaleString()} blocks (~${daysLeft} days)</div>
+                    `;
+                }
+
+                // Build anniversary data
+                buildAnniversaryData(txDate, price);
+
+                loadingDiv.style.display = 'none';
+                resultsDiv.classList.add('visible');
+
+            } catch (err) {
+                errorDiv.textContent = err.message;
+                errorDiv.style.display = 'block';
+                loadingDiv.style.display = 'none';
+            }
+        }
+
+        document.getElementById('lookup-btn').addEventListener('click', lookupDateSats);
+        document.getElementById('lookup-date').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') lookupDateSats();
+        });
+        document.getElementById('lookup-sats').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') lookupDateSats();
+        });
+
         txInput.focus();
         init();
     </script>
