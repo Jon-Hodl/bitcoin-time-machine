@@ -6,13 +6,13 @@ A client-side Bitcoin transaction analyzer that shows if your transaction has cr
 
 ## Live Demo
 
-🚀 **Try it now:** https://jon-hodl.github.io/bitcoin-time-machine-widget/
+🚀 **Try it now:** https://jon-hodl.github.io/bitcoin-time-machine/
 
 ## Features
 
 - ✅ Transaction lookup by TXID
 - ✅ Block age calculation (blocks and time)
-- ✅ Historical price lookup from [Bitcoin Price Database](https://jon-hodl.github.io/Bitcoin-Price/)
+- ✅ Historical price lookup from [Bitcoin Price Database](https://jon-hodl.github.io/Bitcoin-Price-Archive/)
 - ✅ Live current price from mempool.space
 - ✅ Gain/loss calculation ($ and %)
 - ✅ Anniversary price chart with volatility indicators
@@ -34,7 +34,7 @@ Copy and paste this iframe code:
 
 ```html
 <iframe 
-  src="https://jon-hodl.github.io/bitcoin-time-machine-widget/" 
+  src="https://jon-hodl.github.io/bitcoin-time-machine/" 
   width="100%" 
   height="800" 
   style="border:none; border-radius: 12px;">
@@ -44,7 +44,7 @@ Copy and paste this iframe code:
 ## Data Sources
 
 - **Transaction data**: [mempool.space](https://mempool.space) API
-- **Historical prices**: [Bitcoin Price Database](https://jon-hodl.github.io/Bitcoin-Price/)
+- **Historical prices**: [Bitcoin Price Database](https://jon-hodl.github.io/Bitcoin-Price-Archive/)
 - **Current BTC price**: mempool.space API
 
 ## Support
